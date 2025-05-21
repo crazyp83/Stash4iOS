@@ -1,0 +1,33 @@
+name: Build Stash iOS App
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate source code
+        run: ./generate_source_code.sh
+
+      - name: Generate Xcode project
+        run: xcodegen
+
+      - name: Build and archive app
+        run: |
+          xcodebuild -workspace StashApp.xcworkspace -scheme StashApp -sdk iphoneos -configuration Release archive -archivePath build/StashApp.xcarchive
+
+      - name: Export unsigned IPA
+        run: |
+          xcodebuild -exportArchive -archivePath build/StashApp.xcarchive -exportPath build -exportOptionsPlist ExportOptions.plist
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StashApp-unsigned.ipa
+          path: build/StashApp.ipa
