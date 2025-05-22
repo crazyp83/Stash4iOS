@@ -1,0 +1,21 @@
+name: Stash4iOS
+options:
+  bundleIdPrefix: com.example
+packages:
+  Apollo:
+    url: https://github.com/apollographql/apollo-ios
+    from: 0.42.0  # Use the latest stable version compatible at the time of writing
+targets:
+  Stash4iOS:
+    type: application
+    platform: iOS
+    sources:
+      - Stash4iOS
+    dependencies:
+      - package: Apollo
+    settings:
+      base:
+        INFOPLIST_FILE: Stash4iOS/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.Stash4iOS
+        TARGETED_DEVICE_FAMILY: 1  # iPhone
+        CODE_SIGNING_ALLOWED: NO   # Ensure no signing during build
