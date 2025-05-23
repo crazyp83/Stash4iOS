@@ -1,0 +1,45 @@
+name: Build iOS Release
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build and archive app for release
+        run: |
+          xcodebuild \
+            -project StashApp.xcodeproj \
+            -scheme StashApp \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            -archivePath build/StashApp.xcarchive \
+            archive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Create Payload directory
+        run: |
+          mkdir -p Payload
+          cp -r build/StashApp.xcarchive/Products/Applications/StashApp.app Payload/
+
+      - name: Zip Payload to IPA
+        run: |
+          zip -r StashApp.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: StashApp.ipa
+          path: StashApp.ipa

@@ -1,21 +1,16 @@
-name: Stash4iOS
+name: StashApp
 options:
-  bundleIdPrefix: com.example
-packages:
-  Apollo:
-    url: https://github.com/apollographql/apollo-ios
-    from: 0.42.0  # Use the latest stable version compatible at the time of writing
+  deploymentTarget:
+    iOS: "15.0" # Minimum iOS version
 targets:
-  Stash4iOS:
+  StashApp:
     type: application
     platform: iOS
     sources:
-      - Stash4iOS
-    dependencies:
-      - package: Apollo
+      - StashApp
     settings:
       base:
-        INFOPLIST_FILE: Stash4iOS/Info.plist
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.Stash4iOS
-        TARGETED_DEVICE_FAMILY: 1  # iPhone
-        CODE_SIGNING_ALLOWED: NO   # Ensure no signing during build
+        INFOPLIST_FILE: StashApp/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: org.doylerules.stash
+        TARGETED_DEVICE_FAMILY: "1,2" # 1 = iPhone, 2 = iPad (universal)
+        CODE_SIGN_ENTITLEMENTS: StashApp/StashApp.entitlements
