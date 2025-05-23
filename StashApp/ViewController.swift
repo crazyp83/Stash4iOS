@@ -6,11 +6,16 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Initialize WKWebView
         webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(webView)
 
-        // Auto Layout constraints
+        // Enable forward and back swipe gestures
+        webView.allowsBackForwardNavigationGestures = true
+
+        // Set up Auto Layout constraints
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -18,6 +23,7 @@ class ViewController: UIViewController {
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
+        // Load the URL
         if let url = URL(string: "https://stash.doylerules.org") {
             webView.load(URLRequest(url: url))
         }
