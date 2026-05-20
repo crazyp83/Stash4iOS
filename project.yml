@@ -10,9 +10,8 @@ targets:
       - StashApp
     settings:
       base:
-        INFOPLIST_FILE: StashApp/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: org.doylerules.stash
-        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_FILE: StashApp/Info.plist
         CODE_SIGN_STYLE: Manual
         DEVELOPMENT_TEAM: ""
     entitlements:
