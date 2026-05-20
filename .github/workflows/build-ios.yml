@@ -21,7 +21,7 @@ jobs:
 
     - name: Build and Archive
       run: |
-        xcodebuild -project StashApp.xcodeproj -scheme StashApp -destination 'generic/platform=iOS' -sdk iphoneos -configuration Release archive -archivePath StashApp.xcarchive CODE_SIGNING_ALLOWED=NO
+        xcodebuild -project StashApp.xcodeproj -scheme StashApp -destination 'generic/platform=iOS' -sdk iphoneos -configuration Release archive -archivePath StashApp.xcarchive CODE_SIGNING_ALLOWED=NO PRODUCT_BUNDLE_IDENTIFIER=org.doylerules.stash
 
     - name: Export IPA
       run: |
