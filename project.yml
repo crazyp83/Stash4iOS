@@ -1,7 +1,7 @@
 name: StashApp
 options:
   deploymentTarget:
-    iOS: "15.0" # Minimum iOS version
+    iOS: "15.0"
 targets:
   StashApp:
     type: application
@@ -12,5 +12,5 @@ targets:
       base:
         INFOPLIST_FILE: StashApp/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: org.doylerules.stash
-        TARGETED_DEVICE_FAMILY: "1,2" # 1 = iPhone, 2 = iPad (universal)
+        TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_ENTITLEMENTS: StashApp/StashApp.entitlements

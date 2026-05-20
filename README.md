@@ -1,13 +1,11 @@
-# Stash4iOS
-
-Full native Stash client with GraphQL tabs for Scenes, Performers, Galleries, Images, Studios.
+# Full native Stash4iOS with GraphQL tabs
 
 ## Features
-- Configurable server
-- Native browsing
+- Configurable server URL with first-run setup
+- Native tabs: Home (Web), Scenes, Performers, Galleries, Images, Studios
+- GraphQL integration for Stash API
 - Search and filters
-- Background refresh
+- Pull-to-refresh, Background refresh
+- etc.
 
-## Setup
-1. tuist generate
-2. Enter server and API key
+See README for setup.
