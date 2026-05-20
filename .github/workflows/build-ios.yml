@@ -1,4 +1,4 @@
-name: Build iOS
+name: Build Stash4iOS
 
 on:
   push:
@@ -19,12 +19,9 @@ jobs:
     - name: Generate Xcode project
       run: xcodegen generate
 
-    - name: Build and archive
+    - name: Build and Archive
       run: |
-        xcodebuild -project StashApp.xcodeproj -scheme StashApp -sdk iphoneos -configuration Release archive -archivePath StashApp.xcarchive CODE_SIGNING_ALLOWED=NO
-
-    - name: Export IPA
-      run: |
+        xcodebuild -project StashApp.xcodeproj -scheme StashApp -sdk iphoneos -configuration Release archive -archivePath StashApp.xcarchive
         xcodebuild -exportArchive -archivePath StashApp.xcarchive -exportOptionsPlist exportOptions.plist -exportPath . -allowProvisioningUpdates
 
     - name: Upload IPA
