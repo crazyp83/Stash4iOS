@@ -1,45 +1,35 @@
-name: Build iOS Release
+name: Build Stash4iOS
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install xcodegen
-        run: brew install xcodegen
+    - name: Install Tuist
+      run: curl -Ls https://install.tuist.io | sh
 
-      - name: Generate Xcode project
-        run: xcodegen generate
+    - name: Generate Xcode project
+      run: tuist generate
 
-      - name: Build and archive app for release
-        run: |
-          xcodebuild \
-            -project StashApp.xcodeproj \
-            -scheme StashApp \
-            -configuration Release \
-            -sdk iphoneos \
-            -derivedDataPath build \
-            -archivePath build/StashApp.xcarchive \
-            archive \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+    - name: Build
+      run: xcodebuild build -workspace StashApp.xcworkspace -scheme StashApp -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGNING_ALLOWED=NO
 
-      - name: Create Payload directory
-        run: |
-          mkdir -p Payload
-          cp -r build/StashApp.xcarchive/Products/Applications/StashApp.app Payload/
+    - name: Archive for distribution
+      run: xcodebuild archive -workspace StashApp.xcworkspace -scheme StashApp -archivePath StashApp.xcarchive CODE_SIGNING_ALLOWED=NO
 
-      - name: Zip Payload to IPA
-        run: |
-          zip -r StashApp.ipa Payload
+    - name: Export IPA
+      run: xcodebuild -exportArchive -archivePath StashApp.xcarchive -exportOptionsPlist exportOptions.plist -exportPath .
 
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: StashApp.ipa
-          path: StashApp.ipa
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: StashApp.ipa
+        path: StashApp.ipa

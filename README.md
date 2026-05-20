@@ -1,11 +1,15 @@
-# Full native Stash4iOS with GraphQL tabs
+# Stash4iOS
+
+A native iOS client for Stash with GraphQL support.
 
 ## Features
-- Configurable server URL with first-run setup
-- Native tabs: Home (Web), Scenes, Performers, Galleries, Images, Studios
-- GraphQL integration for Stash API
+- Configurable server
+- Native tabs: Scenes, Performers, Galleries, Images, Studios
 - Search and filters
-- Pull-to-refresh, Background refresh
-- etc.
+- Background refresh
+- Fullscreen video with PiP
 
-See README for setup.
+## Setup
+1. Build via GitHub Actions
+2. Install IPA with Esign
+3. Enter server URL + API Key on first run
