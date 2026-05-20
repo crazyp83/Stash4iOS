@@ -1,23 +1,20 @@
 name: StashApp
 options:
-  bundleIdPrefix: org.doylerules
   deploymentTarget:
-    iOS: 15.0
+    iOS: "15.0"
 targets:
   StashApp:
     type: application
     platform: iOS
-    sources: 
-      - path: StashApp
+    sources:
+      - StashApp
     settings:
       base:
         INFOPLIST_FILE: StashApp/Info.plist
-        CODE_SIGN_STYLE: Manual
-        DEVELOPMENT_TEAM: ''
         PRODUCT_BUNDLE_IDENTIFIER: org.doylerules.stash
-    dependencies:
-      - sdk: UIKit.framework
-      - sdk: WebKit.framework
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_STYLE: Manual
+        DEVELOPMENT_TEAM: ""
     entitlements:
       path: StashApp/StashApp.entitlements
 schemes:
@@ -25,9 +22,3 @@ schemes:
     build:
       targets:
         StashApp: all
-    test:
-      targets:
-        - StashApp
-    run:
-      commandLineArguments:
-        - "--reset-settings"
