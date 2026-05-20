@@ -7,7 +7,9 @@ class MainTabBarController: UITabBarController {
         let webVC = ViewController()
         webVC.tabBarItem = UITabBarItem(title: "Web", image: UIImage(systemName: "globe"), tag: 0)
         
-        let scenesVC = createPlaceholder(title: "Scenes", icon: "film")
+        let scenesVC = ScenesViewController()
+        scenesVC.tabBarItem = UITabBarItem(title: "Scenes", image: UIImage(systemName: "film"), tag: 0)
+        
         let performersVC = createPlaceholder(title: "Performers", icon: "person.2")
         let galleriesVC = createPlaceholder(title: "Galleries", icon: "photo.on.rectangle")
         let imagesVC = createPlaceholder(title: "Images", icon: "photo")
