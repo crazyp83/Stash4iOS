@@ -1,43 +1,37 @@
 // Full configurable server + improved web wrapper
+
 import UIKit
 import WebKit
 
 class ViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
-    var activityIndicator: UIActivityIndicatorView!
+    var settingsButton: UIBarButtonItem!
+    private let refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupWebView()
-        setupUI()
-        checkForSavedServer()
+        setupNavigation()
+        checkForServerURL()
     }
     
-    func setupWebView() {
+    private func setupWebView() {
         let config = WKWebViewConfiguration()
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
         webView.allowsBackForwardNavigationGestures = true
-        view.addSubview(webView)
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            webView.topAnchor.constraint(equalTo: view.topAnchor),
-            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
+        view = webView
+        refreshControl.addTarget(self, action: #selector(refreshPage), for: .valueChanged)
+        webView.scrollView.addSubview(refreshControl)
     }
     
-    func setupUI() {
-        let settingsButton = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(openSettings))
+    private func setupNavigation() {
+        settingsButton = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(openSettings))
         navigationItem.rightBarButtonItem = settingsButton
-        
-        activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.center = view.center
-        view.addSubview(activityIndicator)
+        title = "Stash"
     }
     
-    func checkForSavedServer() {
+    private func checkForServerURL() {
         if UserDefaults.standard.string(forKey: "serverURL") == nil {
             openSettings()
         } else {
@@ -45,18 +39,36 @@ class ViewController: UIViewController, WKNavigationDelegate {
         }
     }
     
-    @objc func openSettings() {
-        let settingsVC = SettingsViewController()
-        let nav = UINavigationController(rootViewController: settingsVC)
-        present(nav, animated: true)
-    }
-    
-    func loadWebView() {
+    private func loadWebView() {
         if let urlString = UserDefaults.standard.string(forKey: "serverURL"), let url = URL(string: urlString) {
             let request = URLRequest(url: url)
             webView.load(request)
         }
     }
     
-    // WKNavigationDelegate methods...
+    @objc private func openSettings() {
+        let settingsVC = SettingsViewController()
+        settingsVC.delegate = self
+        let nav = UINavigationController(rootViewController: settingsVC)
+        present(nav, animated: true)
+    }
+    
+    @objc private func refreshPage() {
+        webView.reload()
+        refreshControl.endRefreshing()
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+}
+
+extension ViewController: SettingsDelegate {
+    func didSaveServerURL(_ url: String) {
+        UserDefaults.standard.set(url, forKey: "serverURL")
+        dismiss(animated: true)
+        loadWebView()
+    }
 }

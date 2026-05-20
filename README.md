@@ -1,15 +1,12 @@
 # Stash4iOS
 
-A native iOS client for Stash with GraphQL support.
+A configurable iOS web wrapper for Stash.
 
 ## Features
-- Configurable server URL
-- Native browsing of Scenes, Performers, Galleries, Images, Studios
-- Search and filters
-- Background refresh
-- And more
+- User-configurable server URL (no default)
+- First-run settings screen
+- Pull-to-refresh
+- Settings gear icon
 
-## Setup
-1. Build via GitHub Actions
-2. Install IPA with Esign
-3. Enter your Stash server and API key in Settings.
+## Build
+Use the GitHub Actions workflow to generate IPA for Esign.

@@ -1,7 +1,12 @@
 import UIKit
 
+protocol SettingsDelegate: AnyObject {
+    func didSaveServerURL(_ url: String)
+}
+
 class SettingsViewController: UIViewController {
-    var urlTextField: UITextField!
+    weak var delegate: SettingsDelegate?
+    private let urlTextField = UITextField()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -10,24 +15,17 @@ class SettingsViewController: UIViewController {
         setupUI()
     }
     
-    func setupUI() {
-        urlTextField = UITextField(frame: CGRect(x: 20, y: 100, width: view.frame.width - 40, height: 40))
-        urlTextField.borderStyle = .roundedRect
+    private func setupUI() {
         urlTextField.placeholder = "https://your-stash-server.com"
-        urlTextField.text = UserDefaults.standard.string(forKey: "serverURL")
-        view.addSubview(urlTextField)
-        
-        let saveButton = UIButton(type: .system)
-        saveButton.setTitle("Save", for: .normal)
-        saveButton.addTarget(self, action: #selector(saveURL), for: .touchUpInside)
-        saveButton.frame = CGRect(x: 20, y: 160, width: view.frame.width - 40, height: 50)
-        view.addSubview(saveButton)
+        urlTextField.borderStyle = .roundedRect
+        urlTextField.autocapitalizationType = .none
+        urlTextField.keyboardType = .URL
+        // Add more UI elements as needed
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveURL))
     }
     
-    @objc func saveURL() {
-        if let url = urlTextField.text, !url.isEmpty {
-            UserDefaults.standard.set(url, forKey: "serverURL")
-            dismiss(animated: true)
-        }
+    @objc private func saveURL() {
+        guard let url = urlTextField.text, !url.isEmpty else { return }
+        delegate?.didSaveServerURL(url)
     }
 }

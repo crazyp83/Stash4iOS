@@ -1,4 +1,4 @@
-name: Build Stash4iOS
+name: Build iOS
 
 on:
   push:
@@ -9,21 +9,17 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
     - uses: actions/checkout@v4
-
     - name: Install xcodegen
       run: brew install xcodegen
-
     - name: Generate Xcode project
       run: xcodegen generate
-
     - name: Build and Archive
       run: |
         xcodebuild -project StashApp.xcodeproj -scheme StashApp -sdk iphoneos -configuration Release archive -archivePath StashApp.xcarchive
-        xcodebuild -exportArchive -archivePath StashApp.xcarchive -exportOptionsPlist exportOptions.plist -exportPath . -allowProvisioningUpdates
-
+    - name: Export IPA
+      run: xcodebuild -exportArchive -archivePath StashApp.xcarchive -exportOptionsPlist exportOptions.plist -exportPath .
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
