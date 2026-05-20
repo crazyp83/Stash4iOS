@@ -45,8 +45,40 @@ class ViewController: UIViewController, WKNavigationDelegate {
         if let savedURLString = defaults.string(forKey: serverURLKey), let url = URL(string: savedURLString) {
             loadURL(url)
         } else {
-            openSettings()
+            showPlaceholderPage()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                self.openSettings()
+            }
         }
+    }
+
+    private func showPlaceholderPage() {
+        let html = """
+        <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+                body { font-family: -apple-system; text-align: center; padding: 40px; background: #f5f5f5; color: #333; }
+                h1 { color: #007AFF; }
+                .button { 
+                    display: inline-block; 
+                    background: #007AFF; 
+                    color: white; 
+                    padding: 12px 24px; 
+                    border-radius: 8px; 
+                    text-decoration: none; 
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Welcome to Stash4iOS</h1>
+            <p>Please configure your Stash server URL to get started.</p>
+            <p>Tap the gear icon ⚙️ in the top right to enter your server address.</p>
+        </body>
+        </html>
+        """
+        webView.loadHTMLString(html, baseURL: nil)
     }
 
     @objc private func refreshWebView() {
