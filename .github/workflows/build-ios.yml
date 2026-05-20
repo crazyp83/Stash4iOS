@@ -1,4 +1,4 @@
-name: Build Stash4iOS
+name: Build iOS
 
 on:
   push:
@@ -13,23 +13,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Select Xcode version
-      run: sudo xcode-select -s /Applications/Xcode_16.app || true
-
     - name: Install xcodegen
       run: brew install xcodegen
 
     - name: Generate Xcode project
       run: xcodegen generate
 
-    - name: Build
-      run: xcodebuild build -project StashApp.xcodeproj -scheme StashApp -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGNING_ALLOWED=NO
-
-    - name: Archive for distribution
-      run: xcodebuild archive -project StashApp.xcodeproj -scheme StashApp -archivePath StashApp.xcarchive CODE_SIGNING_ALLOWED=NO
+    - name: Build and archive
+      run: |
+        xcodebuild -project StashApp.xcodeproj -scheme StashApp -sdk iphoneos -configuration Release archive -archivePath StashApp.xcarchive CODE_SIGNING_ALLOWED=NO
 
     - name: Export IPA
-      run: xcodebuild -exportArchive -archivePath StashApp.xcarchive -exportOptionsPlist exportOptions.plist -exportPath . CODE_SIGNING_ALLOWED=NO
+      run: |
+        xcodebuild -exportArchive -archivePath StashApp.xcarchive -exportOptionsPlist exportOptions.plist -exportPath . -allowProvisioningUpdates
 
     - name: Upload IPA
       uses: actions/upload-artifact@v4
