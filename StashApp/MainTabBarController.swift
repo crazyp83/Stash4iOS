@@ -10,7 +10,9 @@ class MainTabBarController: UITabBarController {
         let scenesVC = ScenesViewController()
         scenesVC.tabBarItem = UITabBarItem(title: "Scenes", image: UIImage(systemName: "film"), tag: 0)
         
-        let performersVC = createPlaceholder(title: "Performers", icon: "person.2")
+        let performersVC = PerformersViewController()
+        performersVC.tabBarItem = UITabBarItem(title: "Performers", image: UIImage(systemName: "person.2"), tag: 0)
+        
         let galleriesVC = createPlaceholder(title: "Galleries", icon: "photo.on.rectangle")
         let imagesVC = createPlaceholder(title: "Images", icon: "photo")
         let studiosVC = createPlaceholder(title: "Studios", icon: "building.2")
