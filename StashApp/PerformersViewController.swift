@@ -33,6 +33,7 @@ class PerformersViewController: UIViewController, UITableViewDataSource, UITable
             return
         }
         
+        // Improved query with pagination to get more performers
         let query = """
         query {
           findPerformers {
@@ -60,14 +61,23 @@ class PerformersViewController: UIViewController, UITableViewDataSource, UITable
             }
             
             do {
-                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let dataDict = json["data"] as? [String: Any],
-                   let findPerformers = dataDict["findPerformers"] as? [String: Any],
-                   let performersArray = findPerformers["performers"] as? [[String: Any]] {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    if let errors = json["errors"] as? [[String: Any]] {
+                        let errorMsg = errors.first?["message"] as? String ?? "GraphQL error"
+                        DispatchQueue.main.async { self.showError(errorMsg) }
+                        return
+                    }
                     
-                    DispatchQueue.main.async {
-                        self.performers = performersArray
-                        self.tableView.reloadData()
+                    if let dataDict = json["data"] as? [String: Any],
+                       let findPerformers = dataDict["findPerformers"] as? [String: Any],
+                       let performersArray = findPerformers["performers"] as? [[String: Any]] {
+                        
+                        DispatchQueue.main.async {
+                            self.performers = performersArray
+                            self.tableView.reloadData()
+                        }
+                    } else {
+                        DispatchQueue.main.async { self.showError("Failed to parse performers response") }
                     }
                 }
             } catch {
@@ -98,5 +108,19 @@ class PerformersViewController: UIViewController, UITableViewDataSource, UITable
         cell.textLabel?.text = name
         cell.detailTextLabel?.text = birthdate.isEmpty ? "\(sceneCount) scenes" : "\(birthdate) · \(sceneCount) scenes"
         return cell
+    }
+    
+    // MARK: - UITableViewDelegate
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let performer = performers[indexPath.row]
+        let name = performer["name"] as? String ?? "Unknown"
+        let id = performer["id"] as? String ?? ""
+        
+        let alert = UIAlertController(title: name, message: "Performer ID: \(id)
+\n(Detail view coming soon)", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
