@@ -14,6 +14,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     
     private let urlTextField = UITextField()
     private let apiKeyTextField = UITextField()
+    private let appearanceSegmentedControl = UISegmentedControl(items: ["System", "Light", "Dark"])
     private let testButton = UIButton(type: .system)
     private let saveButton = UIButton(type: .system)
     private let spinner = UIActivityIndicatorView(style: .medium)
@@ -45,6 +46,11 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         apiKeyTextField.translatesAutoresizingMaskIntoConstraints = false
         apiKeyTextField.delegate = self
         
+        // Appearance segmented control
+        appearanceSegmentedControl.selectedSegmentIndex = 0 // Default to System
+        appearanceSegmentedControl.addTarget(self, action: #selector(appearanceChanged), for: .valueChanged)
+        appearanceSegmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        
         // Test Button
         testButton.setTitle("Test Connection", for: .normal)
         testButton.addTarget(self, action: #selector(testConnection), for: .touchUpInside)
@@ -53,7 +59,12 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         // Spinner
         spinner.hidesWhenStopped = true
         
-        let stack = UIStackView(arrangedSubviews: [urlTextField, apiKeyTextField, testButton])
+        let appearanceLabel = UILabel()
+        appearanceLabel.text = "Appearance"
+        appearanceLabel.font = .preferredFont(forTextStyle: .headline)
+        appearanceLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stack = UIStackView(arrangedSubviews: [urlTextField, apiKeyTextField, appearanceLabel, appearanceSegmentedControl, testButton])
         stack.axis = .vertical
         stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -71,15 +82,29 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         if let savedURL = UserDefaults.standard.string(forKey: "serverURL") {
             urlTextField.text = savedURL
         } else {
-            // Always prefill https:// if nothing saved
             urlTextField.text = "https://"
-            // Move cursor to end so user can type immediately
-            DispatchQueue.main.async {
-                self.urlTextField.selectedTextRange = self.urlTextField.textRange(from: self.urlTextField.endOfDocument, to: self.urlTextField.endOfDocument)
-            }
         }
         if let savedKey = UserDefaults.standard.string(forKey: "apiKey") {
             apiKeyTextField.text = savedKey
+        }
+        
+        // Load appearance mode
+        let appearanceMode = UserDefaults.standard.integer(forKey: "appearanceMode")
+        appearanceSegmentedControl.selectedSegmentIndex = appearanceMode
+    }
+    
+    @objc private func appearanceChanged(_ sender: UISegmentedControl) {
+        let mode = sender.selectedSegmentIndex
+        UserDefaults.standard.set(mode, forKey: "appearanceMode")
+        
+        // Apply immediately
+        if let window = UIApplication.shared.windows.first {
+            switch mode {
+            case 0: window.overrideUserInterfaceStyle = .unspecified
+            case 1: window.overrideUserInterfaceStyle = .light
+            case 2: window.overrideUserInterfaceStyle = .dark
+            default: window.overrideUserInterfaceStyle = .unspecified
+            }
         }
     }
     
@@ -92,7 +117,6 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         testButton.isEnabled = false
         spinner.startAnimating()
         
-        // Simple test call would go here
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             self.spinner.stopAnimating()
             self.testButton.isEnabled = true
@@ -124,7 +148,6 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        // This is a backup - loadSavedSettings already handles prefill
         if textField == urlTextField && (textField.text?.isEmpty ?? true) {
             textField.text = "https://"
         }
