@@ -81,11 +81,11 @@ class GalleriesViewController: UIViewController, UITableViewDataSource, UITableV
         present(alert, animated: true)
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return galleries.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "GalleryCell", for: indexPath)
         let gallery = galleries[indexPath.row]
         let title = gallery["title"] as? String ?? "Untitled"
