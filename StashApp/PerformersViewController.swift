@@ -118,8 +118,15 @@ class PerformersViewController: UIViewController, UITableViewDataSource, UITable
         let name = performer["name"] as? String ?? "Unknown"
         let id = performer["id"] as? String ?? ""
         
-        let alert = UIAlertController(title: name, message: "Performer ID: \(id)
-\n(Detail view coming soon)", preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: name,
+            message: """
+            Performer ID: \(id)
+            
+            (Detail view coming soon)
+            """,
+            preferredStyle: .alert
+        )
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
