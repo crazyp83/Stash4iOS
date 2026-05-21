@@ -1,11 +1,6 @@
 import UIKit
 import WebKit
 
-protocol SettingsDelegate: AnyObject {
-    func didSaveServerURL(_ url: String)
-    func didSaveAPIKey(_ apiKey: String)
-}
-
 class ViewController: UIViewController, WKNavigationDelegate, SettingsDelegate, WKScriptMessageHandler {
     var webView: WKWebView!
     private let defaults = UserDefaults.standard
