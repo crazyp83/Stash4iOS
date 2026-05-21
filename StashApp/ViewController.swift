@@ -6,7 +6,7 @@ protocol SettingsDelegate: AnyObject {
     func didSaveAPIKey(_ apiKey: String)
 }
 
-class ViewController: UIViewController, WKNavigationDelegate, SettingsDelegate {
+class ViewController: UIViewController, WKNavigationDelegate, SettingsDelegate, WKScriptMessageHandler {
     var webView: WKWebView!
     private let defaults = UserDefaults.standard
     private let serverURLKey = "serverURL"
@@ -29,6 +29,9 @@ class ViewController: UIViewController, WKNavigationDelegate, SettingsDelegate {
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.mediaTypesRequiringUserActionForPlayback = []
+        
+        // Register message handler for the welcome screen button
+        config.userContentController.add(self, name: "settings")
         
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
@@ -144,6 +147,13 @@ class ViewController: UIViewController, WKNavigationDelegate, SettingsDelegate {
         defaults.set(apiKey, forKey: apiKeyKey)
         if let serverURL = currentServerURL {
             loadStashServer(serverURL)
+        }
+    }
+    
+    // MARK: - WKScriptMessageHandler (for welcome screen button)
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if message.name == "settings" {
+            openSettings()
         }
     }
     
