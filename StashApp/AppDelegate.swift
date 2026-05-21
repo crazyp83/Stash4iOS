@@ -8,7 +8,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.overrideUserInterfaceStyle = .unspecified  // Follow system dark/light mode
+        
+        // Apply saved appearance mode
+        let appearanceMode = UserDefaults.standard.integer(forKey: "appearanceMode")
+        switch appearanceMode {
+        case 0: window?.overrideUserInterfaceStyle = .unspecified
+        case 1: window?.overrideUserInterfaceStyle = .light
+        case 2: window?.overrideUserInterfaceStyle = .dark
+        default: window?.overrideUserInterfaceStyle = .unspecified
+        }
+        
         window?.rootViewController = MainTabBarController()
         window?.makeKeyAndVisible()
         
@@ -37,9 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func handleBackgroundRefresh(task: BGAppRefreshTask) {
         scheduleBackgroundRefresh() // Reschedule for next time
         
-        // Refresh data in background (simple version - just re-fetch scenes)
         if let serverURL = UserDefaults.standard.string(forKey: "serverURL") {
-            // In a real app you'd refresh all tabs here
             print("Background refresh triggered for \(serverURL)")
         }
         
