@@ -8,6 +8,10 @@ protocol SettingsDelegate: AnyObject {
 class SettingsViewController: UIViewController, UITextFieldDelegate {
     weak var delegate: SettingsDelegate?
     
+    // These two properties are set by ViewController before presenting
+    var currentServerURL: String?
+    var currentAPIKey: String?
+    
     private let urlTextField = UITextField()
     private let apiKeyTextField = UITextField()
     private let testButton = UIButton(type: .system)
