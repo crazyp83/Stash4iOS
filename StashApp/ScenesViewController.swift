@@ -33,6 +33,7 @@ class ScenesViewController: UIViewController, UITableViewDataSource, UITableView
             return
         }
         
+        // Improved GraphQL query for Stash
         let query = """
         query {
           findScenes {
@@ -59,18 +60,27 @@ class ScenesViewController: UIViewController, UITableViewDataSource, UITableView
             }
             
             do {
-                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let dataDict = json["data"] as? [String: Any],
-                   let findScenes = dataDict["findScenes"] as? [String: Any],
-                   let scenesArray = findScenes["scenes"] as? [[String: Any]] {
+                if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    if let errors = json["errors"] as? [[String: Any]] {
+                        let errorMsg = errors.first?["message"] as? String ?? "GraphQL error"
+                        DispatchQueue.main.async { self.showError(errorMsg) }
+                        return
+                    }
                     
-                    DispatchQueue.main.async {
-                        self.scenes = scenesArray
-                        self.tableView.reloadData()
+                    if let dataDict = json["data"] as? [String: Any],
+                       let findScenes = dataDict["findScenes"] as? [String: Any],
+                       let scenesArray = findScenes["scenes"] as? [[String: Any]] {
+                        
+                        DispatchQueue.main.async {
+                            self.scenes = scenesArray
+                            self.tableView.reloadData()
+                        }
+                    } else {
+                        DispatchQueue.main.async { self.showError("Failed to parse scenes response") }
                     }
                 }
             } catch {
-                DispatchQueue.main.async { self.showError("Failed to parse response") }
+                DispatchQueue.main.async { self.showError("Failed to parse response: \(error.localizedDescription)") }
             }
         }.resume()
     }
