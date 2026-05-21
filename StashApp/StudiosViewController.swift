@@ -81,7 +81,10 @@ class StudiosViewController: UIViewController, UITableViewDataSource, UITableVie
         present(alert, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return studios.count }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return studios.count
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StudioCell", for: indexPath)
         let studio = studios[indexPath.row]
