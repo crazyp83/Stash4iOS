@@ -22,6 +22,10 @@ class MainTabBarController: UITabBarController {
         let studiosVC = StudiosViewController()
         studiosVC.tabBarItem = UITabBarItem(title: "Studios", image: UIImage(systemName: "building.2"), tag: 0)
         
-        viewControllers = [webVC, scenesVC, performersVC, galleriesVC, imagesVC, studiosVC]
+        // Settings tab
+        let settingsVC = SettingsViewController()
+        settingsVC.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gearshape"), tag: 0)
+        
+        viewControllers = [webVC, scenesVC, performersVC, galleriesVC, imagesVC, studiosVC, settingsVC]
     }
 }
