@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         default: window?.overrideUserInterfaceStyle = .unspecified
         }
         
-        window?.rootViewController = MainTabBarController()
+        // Launch directly into Web view (no tab bar)
+        window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()
         
         registerBackgroundTasks()
