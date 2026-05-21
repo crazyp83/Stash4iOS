@@ -71,7 +71,12 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
         if let savedURL = UserDefaults.standard.string(forKey: "serverURL") {
             urlTextField.text = savedURL
         } else {
+            // Always prefill https:// if nothing saved
             urlTextField.text = "https://"
+            // Move cursor to end so user can type immediately
+            DispatchQueue.main.async {
+                self.urlTextField.selectedTextRange = self.urlTextField.textRange(from: self.urlTextField.endOfDocument, to: self.urlTextField.endOfDocument)
+            }
         }
         if let savedKey = UserDefaults.standard.string(forKey: "apiKey") {
             apiKeyTextField.text = savedKey
@@ -119,6 +124,7 @@ class SettingsViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        // This is a backup - loadSavedSettings already handles prefill
         if textField == urlTextField && (textField.text?.isEmpty ?? true) {
             textField.text = "https://"
         }
