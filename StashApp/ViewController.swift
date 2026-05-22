@@ -34,12 +34,16 @@ class ViewController: UIViewController, WKNavigationDelegate, SettingsDelegate, 
         webView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(webView)
         
+        // Extend under Dynamic Island / notch (full screen)
         NSLayoutConstraint.activate([
-            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            webView.topAnchor.constraint(equalTo: view.topAnchor),
             webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+        
+        // Prevent white safe area inset
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
         
         // Pull to refresh
         let refreshControl = UIRefreshControl()
